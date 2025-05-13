@@ -1,0 +1,24 @@
+your_project/
+├── app.py                    # Main Flask application file
+├── config.py                 # Configuration settings
+├── requirements.txt          # Python dependencies
+├── static/                   # Static files (CSS, JS, images)
+│   ├── css/
+│   │   └── style.css         # Main stylesheet
+│   ├── js/
+│   │   └── script.js         # Main JavaScript file
+│   └── images/               # Image assets
+│       └── logo.png
+├── templates/                # HTML templates
+│   ├── base.html             # Base template
+│   ├── index.html            # Home page
+│   ├── about.html            # About page
+│   └── partials/             # Reusable components
+│       └── navbar.html
+├── models/                   # Database models
+│   └── models.py
+├── routes/                   # Flask route definitions
+│   └── routes.py
+├── utils/                    # Utility functions
+│   └── helpers.py
+└── venv/                     # Python virtual environment (ignored in version control)

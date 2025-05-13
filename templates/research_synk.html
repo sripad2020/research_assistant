@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResearchSync | AI-Powered Research Assistant</title>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --light-color: #e8f4f8;
+            --dark-color: #0a192f;
+            --success-color: #4caf50;
+            --error-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .upload-section {
+            background: rgba(10, 25, 47, 0.8);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 2rem;
+            border: 2px dashed rgba(74, 111, 165, 0.5);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .upload-container:hover {
+            border-color: var(--accent-color);
+            background: rgba(74, 111, 165, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+        }
+
+        .upload-text {
+            text-align: center;
+        }
+
+        .upload-text h3 {
+            margin-bottom: 0.5rem;
+            color: var(--light-color);
+        }
+
+        .upload-text p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .btn-outline:hover {
+            background: rgba(79, 195, 247, 0.1);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .paper-metadata {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(16, 96, 136, 0.2);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .paper-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
+        }
+
+        .paper-authors {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+        }
+
+        .paper-abstract {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            background: rgba(10, 25, 47, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-header {
+            padding: 1rem;
+            background: rgba(16, 96, 136, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 10px;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: var(--primary-color);
+            border-bottom-right-radius: 0;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background: rgba(16, 96, 136, 0.5);
+            border-bottom-left-radius: 0;
+        }
+
+        .chat-input-container {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(10, 25, 47, 0.6);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .send-btn {
+            margin-left: 1rem;
+            background: var(--accent-color);
+            color: var(--dark-color);
+            border: none;
+            border-radius: 5px;
+            padding: 0 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            background: #3ab0e0;
+            transform: translateY(-2px);
+        }
+
+        .research-questions {
+            margin-top: 2rem;
+        }
+
+        .questions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .question-card {
+            background: rgba(16, 96, 136, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .question-card:hover {
+            background: rgba(16, 96, 136, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        .question-category {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-active {
+            background-color: var(--success-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .status-inactive {
+            background-color: var(--error-color);
+        }
+
+        .threejs-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.2;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: rgba(16, 96, 136, 0.3);
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            align-self: flex-start;
+            max-width: 80%;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .questions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-container {
+                height: 400px;
+            }
+
+            .message {
+                max-width: 90%;
+            }
+        }
+        .header-nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: var(--light-color);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--accent-color);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .header-nav {
+        display: none;
+    }
+}
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="threejs-container" id="threejs-container"></div>
+
+    <div class="container">
+        <header>
+    <div class="logo">
+        <div class="logo-icon">RS</div>
+        <h1>ResearchSync</h1>
+    </div>
+    <nav class="header-nav">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/chatting" class="nav-link">Research Tools</a>
+    </nav>
+    <div>
+        <span class="status-indicator status-active"></span>
+        <span>AI Research Assistant</span>
+    </div>
+</header>
+
+        <section class="upload-section">
+            <div class="upload-container" id="upload-container">
+                <div class="upload-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </div>
+                <div class="upload-text">
+                    <h3>Upload Research Paper</h3>
+                    <p>Drag & drop your PDF file here or click to browse</p>
+                </div>
+                <input type="file" id="file-input" class="file-input" accept=".pdf">
+                <button class="btn btn-primary" id="upload-btn">Browse Files</button>
+            </div>
+
+            <div class="paper-metadata" id="paper-metadata" style="display: none;">
+                <h3 class="paper-title" id="paper-title"></h3>
+                <p class="paper-authors" id="paper-authors"></p>
+                <p class="paper-abstract" id="paper-abstract"></p>
+            </div>
+        </section>
+
+        <section class="chat-container">
+            <div class="chat-header">
+                <h3>Research Assistant</h3>
+                <button class="btn btn-outline" id="clear-document">Clear Document</button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot-message">
+                    Welcome to ResearchSync! Upload a research paper PDF to get started, or ask me any research-related questions.
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="user-input" placeholder="Ask about the research paper...">
+                <button class="send-btn" id="send-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <section class="research-questions">
+            <div class="questions-header">
+                <h3>Suggested Research Questions</h3>
+                <small>Click to ask</small>
+            </div>
+            <div class="questions-grid" id="questions-grid">
+                <!-- Questions will be populated here -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Initialize Particles.js
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#4fc3f7"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#4a6fa5",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // Initialize Three.js
+        const threeContainer = document.getElementById('threejs-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        threeContainer.appendChild(renderer.domElement);
+
+        // Create a floating geometry
+        const geometry = new THREE.IcosahedronGeometry(2, 0);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x4fc3f7,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.3
+        });
+        const shape = new THREE.Mesh(geometry, material);
+        scene.add(shape);
+
+        camera.position.z = 5;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            shape.rotation.x += 0.001;
+            shape.rotation.y += 0.002;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // DOM elements
+        const uploadBtn = document.getElementById('upload-btn');
+        const fileInput = document.getElementById('file-input');
+        const uploadContainer = document.getElementById('upload-container');
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const questionsGrid = document.getElementById('questions-grid');
+        const paperMetadata = document.getElementById('paper-metadata');
+        const clearDocumentBtn = document.getElementById('clear-document');
+        const paperTitle = document.getElementById('paper-title');
+        const paperAuthors = document.getElementById('paper-authors');
+        const paperAbstract = document.getElementById('paper-abstract');
+
+        // Drag and drop functionality
+        uploadContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadContainer.style.borderColor = '#4fc3f7';
+            uploadContainer.style.backgroundColor = 'rgba(74, 111, 165, 0.2)';
+        });
+
+        uploadContainer.addEventListener('dragleave', () => {
+            uploadContainer.style.borderColor = 'rgba(74, 111, 165, 0.5)';
+            uploadContainer.style.backgroundColor = 'transparent';
+        });
+
+        uploadContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadContainer.style.borderColor = 'rgba(74, 111, 165, 0.5)';
+            uploadContainer.style.backgroundColor = 'transparent';
+
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileUpload();
+            }
+        });
+
+        // File upload handling
+        uploadBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFileUpload);
+
+        function handleFileUpload() {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    addMessage(data.error, 'bot', true);
+                    return;
+                }
+
+                // Show success message
+                addMessage(data.message, 'bot');
+
+                // Show paper metadata
+                paperTitle.textContent = data.metadata.title || 'Untitled Document';
+                paperAuthors.textContent = data.metadata.authors || 'Authors not specified';
+                paperAbstract.textContent = data.metadata.abstract || 'Abstract not available';
+                paperMetadata.style.display = 'block';
+
+                // Update questions grid
+                updateQuestionsGrid(data.questions);
+            })
+            .catch(error => {
+                addMessage('Error uploading file. Please try again.', 'bot', true);
+                console.error('Error:', error);
+            });
+        }
+
+        // Chat functionality
+        function addMessage(text, sender, isError = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+
+            if (isError) {
+                messageDiv.style.backgroundColor = 'var(--error-color)';
+            }
+
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.classList.add('typing-indicator');
+            typingDiv.id = 'typing-indicator';
+
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('typing-dot');
+                typingDiv.appendChild(dot);
+            }
+
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            userInput.value = '';
+
+            showTypingIndicator();
+
+            fetch('/chat_sync', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideTypingIndicator();
+
+                if (data.response) {
+                    addMessage(data.response, 'bot');
+                }
+
+                if (data.questions) {
+                    updateQuestionsGrid(data.questions);
+                }
+            })
+            .catch(error => {
+                hideTypingIndicator();
+                addMessage('Sorry, I encountered an error processing your request.', 'bot', true);
+                console.error('Error:', error);
+            });
+        }
+
+        // Event listeners for chat
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Update questions grid
+        function updateQuestionsGrid(questions) {
+            questionsGrid.innerHTML = '';
+
+            for (const [category, questionList] of Object.entries(questions)) {
+                if (questionList.length > 0) {
+                    const questionCard = document.createElement('div');
+                    questionCard.classList.add('question-card');
+
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.classList.add('question-category');
+                    categoryDiv.textContent = category.toUpperCase();
+
+                    const questionDiv = document.createElement('div');
+                    questionDiv.classList.add('question-text');
+                    questionDiv.textContent = questionList[0]; // Show first question
+
+                    questionCard.appendChild(categoryDiv);
+                    questionCard.appendChild(questionDiv);
+
+                    questionCard.addEventListener('click', () => {
+                        userInput.value = questionList[0];
+                        userInput.focus();
+                    });
+
+                    questionsGrid.appendChild(questionCard);
+                }
+            }
+        }
+
+        // Clear document
+        clearDocumentBtn.addEventListener('click', () => {
+            fetch('/clear_document', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    addMessage(data.message, 'bot');
+                    paperMetadata.style.display = 'none';
+                    updateQuestionsGrid({ context: [], gap: [], methodology: [], findings: [], implications: [], limitations: [], future: [] });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Initial questions
+        updateQuestionsGrid({
+            context: ["What is the research context for your area of interest?"],
+            gap: ["What knowledge gap would you like to explore?"],
+            methodology: ["What methodology are you interested in learning about?"],
+            findings: ["What kind of research findings are you looking for?"],
+            implications: ["What implications are you interested in understanding?"],
+            limitations: ["What research limitations would you like to discuss?"],
+            future: ["What future research directions are you curious about?"]
+        });
+        // Mobile menu functionality
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+mobileMenuBtn.addEventListener('click', () => {
+    mobileMenu.classList.add('active');
+});
+
+mobileMenuClose.addEventListener('click', () => {
+    mobileMenu.classList.remove('active');
+});
+    </script>
+</body>
+</html>
