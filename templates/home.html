@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Research Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --gradient-start: #3498db;
+            --gradient-end: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background-color: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Merriweather', serif;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--secondary-color), #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo span {
+            color: var(--secondary-color);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+            position: relative;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary-color);
+            background: rgba(255,255,255,0.1);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--secondary-color);
+            transition: width 0.3s;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        main {
+            padding: 40px 0;
+            position: relative;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            background: transparent;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding: 80px 0;
+            background: rgba(255,255,255,0.8);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(52,152,219,0.1) 0%, rgba(44,62,80,0) 70%);
+            z-index: -1;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+
+        .chat-container {
+            background-color: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .chat-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .chat-header h2 {
+            font-family: 'Merriweather', serif;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .chat-header .badge {
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chat-messages {
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(249, 249, 249, 0.7);
+            border-radius: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--secondary-color) #f1f1f1;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .message:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .user-message {
+            background-color: rgba(236, 240, 241, 0.8);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .assistant-message {
+            border-left: 4px solid var(--accent-color);
+            background-color: rgba(255,255,255,0.9);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .message-content {
+            line-height: 1.6;
+        }
+
+        .message-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .message-content img:hover {
+            transform: scale(1.02);
+        }
+
+        .input-form {
+            display: flex;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .input-form input[type="text"] {
+            flex: 1;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .input-form input[type="text"]:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .input-form button {
+            padding: 15px 25px;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin-left: 10px;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .features {
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .features h2 {
+            font-family: 'Merriweather', serif;
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--dark-color);
+            font-size: 2.5rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .features h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            bottom: -10px;
+            left: 25%;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h3 {
+            font-family: 'Merriweather', serif;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .feature-card .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .feature-card .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        #threejs-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        footer {
+            background-color: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 50px 0 20px;
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 25px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            padding: 5px 10px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--secondary-color);
+            transition: width 0.3s;
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+
+        .copyright {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                margin-top: 15px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            nav ul li {
+                margin: 5px 10px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .input-form {
+                flex-direction: column;
+            }
+
+            .input-form input[type="text"] {
+                border-radius: 30px;
+                margin-bottom: 10px;
+            }
+
+            .input-form button {
+                border-radius: 30px;
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(52, 152, 219, 0.1);
+            z-index: -1;
+        }
+
+        .bg-element-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+            background: radial-gradient(circle, rgba(52, 152, 219, 0.2) 0%, rgba(52, 152, 219, 0) 70%);
+        }
+
+        .bg-element-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -100px;
+            background: radial-gradient(circle, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0) 70%);
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.4s; }
+        .feature-card:nth-child(4) { animation-delay: 0.6s; }
+        .feature-card:nth-child(5) { animation-delay: 0.8s; }
+        .feature-card:nth-child(6) { animation-delay: 1s; }
+        .feature-card:nth-child(7) { animation-delay: 1.2s; }
+        .feature-card:nth-child(8) { animation-delay: 1.4s; }
+        .feature-card:nth-child(9) { animation-delay: 1.6s; }
+        .feature-card:nth-child(10) { animation-delay: 1.8s; }
+        .feature-card:nth-child(11) { animation-delay: 2s; }
+        .feature-card:nth-child(12) { animation-delay: 2.2s; }
+        .feature-card:nth-child(13) { animation-delay: 2.4s; }
+        .feature-card:nth-child(14) { animation-delay: 2.6s; }
+        .feature-card:nth-child(15) { animation-delay: 2.8s; }
+
+        .glow-on-hover {
+            transition: box-shadow 0.3s;
+        }
+
+        .glow-on-hover:hover {
+            box-shadow: 0 0 15px var(--secondary-color);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2980b9;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="threejs-canvas"></div>
+    <div id="particles-js"></div>
+    <div class="bg-element bg-element-1"></div>
+    <div class="bg-element bg-element-2"></div>
+
+    <header>
+        <div class="container header-content">
+            <div class="logo">Academic<span>Research</span>Assistant</div>
+            <nav>
+                <ul>
+                    <li><a href="/research_sync">Research Sync Assistant</a></li>
+                    <li><a href="/">Index</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'error' if category == 'error' else 'success' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if not paper %}
+            <section class="hero">
+                <h1>Your AI-Powered Research Assistant</h1>
+                <p>Discover, analyze, and summarize academic papers with AI. Integrates with arXiv and OpenAlex to find relevant papers and extract insights.</p>
+                <a href="#chat" class="btn btn-primary floating" style="margin-top: 20px;">Start Chatting <i class="fas fa-arrow-down"></i></a>
+            </section>
+
+            <section id="features" class="features">
+                <h2>15 Powerful Research Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+                        <h3>Paper Summarization</h3>
+                        <p>Get concise summaries of research papers, highlighting key findings and methodologies.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Summarize the paper: [Paper Title]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-search"></i></div>
+                        <h3>Research Gap Identification</h3>
+                        <p>Identify under-explored areas in your research field.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="What are research gaps in [Your Field]?">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-book"></i></div>
+                        <h3>Literature Review</h3>
+                        <p>Generate comprehensive literature reviews on any topic.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Generate literature review about [Topic]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-exchange-alt"></i></div>
+                        <h3>Paper Comparison</h3>
+                        <p>Compare multiple papers across methodologies and findings.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Compare papers: [Paper1], [Paper2]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
+                        <h3>Citation Network</h3>
+                        <p>Visualize citation relationships between papers.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Show citation network for [Paper]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Research Trends</h3>
+                        <p>Analyze publication trends and emerging topics.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Show trends in [Field]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-user-graduate"></i></div>
+                        <h3>Author Impact</h3>
+                        <p>Analyze an author's research impact and collaborations.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Analyze author [Author Name]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-university"></i></div>
+                        <h3>Conference Summary</h3>
+                        <p>Summarize key papers and trends from conferences.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Summarize [Conference] [Year]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-file-signature"></i></div>
+                        <h3>Research Proposal</h3>
+                        <p>Generate structured research proposals.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Generate proposal about [Topic]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-flask"></i></div>
+                        <h3>Methodology Extraction</h3>
+                        <p>Extract research methodologies from papers.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Extract methodologies from [Paper]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-puzzle-piece"></i></div>
+                        <h3>Key Concept Extraction</h3>
+                        <p>Identify key concepts and relationships in papers.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Extract key concepts from [Paper]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-hourglass-half"></i></div>
+                        <h3>Research Timeline</h3>
+                        <p>Visualize the evolution of research on a topic.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Show timeline for [Topic]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-search-plus"></i></div>
+                        <h3>Advanced Search</h3>
+                        <p>Search across arXiv and OpenAlex databases.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Search for [Query]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h3>Personalized Recommendations</h3>
+                        <p>Get paper recommendations based on your history.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Recommend papers for me">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                        <h3>General Research Help</h3>
+                        <p>Ask any research-related question for AI assistance.</p>
+                        <form action="/chat" method="POST" class="feature-form">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="message" value="Help with [Your Question]">
+                            <button type="submit" class="btn glow-on-hover">Try It <i class="fas fa-play"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <section id="chat" class="chat-container">
+                <div class="chat-header">
+                    <h2>Research Assistant Chat</h2>
+                    <span class="badge">Beta</span>
+                </div>
+
+                <div class="chat-messages">
+                    {% if responses %}
+                        {% for response in responses %}
+                            <div class="message user-message">
+                                <div class="message-header">
+                                    <span>You</span>
+                                    <span>{{ now }}</span>
+                                </div>
+                                <div class="message-content">
+                                    {{ message }}
+                                </div>
+                            </div>
+
+                            <div class="message assistant-message">
+                                <div class="message-header">
+                                    <span>Research Assistant</span>
+                                    <span>{{ now }}</span>
+                                </div>
+                                <div class="message-content">
+                                    {% if response.type == 'summary' %}
+                                        <h3>Summary of "{{ response.data.title }}"</h3>
+                                        <p>{{ response.data.summary }}</p>
+                                        <form action="/user/{{ user_id }}/save/{{ response.data.paper_id }}" method="POST">
+                                            <button type="submit" class="btn btn-primary glow-on-hover">Save Paper</button>
+                                        </form>
+                                    {% elif response.type == 'research_gaps' %}
+                                        <h3>Research Gaps in {{ response.data.field }}</h3>
+                                        <p>{{ response.data.gaps }}</p>
+                                    {% elif response.type == 'search_results' %}
+                                        <h3>Search Results for "{{ response.data.query }}"</h3>
+                                        {% for paper in response.data.papers %}
+                                            <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                                                <h4><a href="/paper/{{ paper.id }}" style="color: var(--primary-color); text-decoration: none;">{{ paper.title }}</a></h4>
+                                                <p style="color: #666; font-size: 14px;">
+                                                    {{ paper.authors|join(', ') }} • {{ paper.publication_date }}
+                                                </p>
+                                                <p>{{ paper.abstract[:200] }}...</p>
+                                                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                                    <form action="/chat" method="POST">
+                                                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                                                        <input type="hidden" name="message" value="Summarize the paper: {{ paper.title }}">
+                                                        <button type="submit" class="btn btn-secondary glow-on-hover">Summarize</button>
+                                                    </form>
+                                                    <form action="/user/{{ user_id }}/save/{{ paper.id }}" method="POST">
+                                                        <button type="submit" class="btn btn-primary glow-on-hover">Save</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    {% elif response.type == 'literature_review' %}
+                                        <h3>Literature Review: {{ response.data.topic }}</h3>
+                                        <p>{{ response.data.review }}</p>
+                                    {% elif response.type == 'image' %}
+                                        <h3>{{ response.data.title }}</h3>
+                                        <img src="data:image/png;base64,{{ response.data.image }}" alt="Visualization" class="glow-on-hover">
+                                    {% elif response.type == 'paper_comparison' %}
+                                        <h3>Paper Comparison</h3>
+                                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                                            <thead>
+                                                <tr style="background: #f1f1f1;">
+                                                    <th style="padding: 10px; border: 1px solid #ddd;">Dimension</th>
+                                                    {% for i in range(response.data.comparison_table|length) %}
+                                                        <th style="padding: 10px; border: 1px solid #ddd;">Paper {{ i+1 }}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for row in response.data.comparison_table %}
+                                                    <tr>
+                                                        <td style="padding: 10px; border: 1px solid #ddd;">{{ row.dimension }}</td>
+                                                        {% for i in range(response.data.comparison_table|length) %}
+                                                            <td style="padding: 10px; border: 1px solid #ddd;">{{ row['paper_' ~ (i+1)] }}</td>
+                                                        {% endfor %}
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <h4 style="margin-top: 20px;">Detailed Analysis</h4>
+                                        <p>{{ response.data.detailed_analysis }}</p>
+                                    {% elif response.type == 'recommendations' %}
+                                        <h3>Recommended Papers</h3>
+                                        {% for paper in response.data %}
+                                            <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                                                <h4><a href="/paper/{{ paper.id }}" style="color: var(--primary-color); text-decoration: none;">{{ paper.title }}</a></h4>
+                                                <p style="color: #666; font-size: 14px;">Similarity: {{ (paper.similarity * 100)|round(1) }}%</p>
+                                                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                                    <form action="/chat" method="POST">
+                                                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                                                        <input type="hidden" name="message" value="Summarize the paper: {{ paper.title }}">
+                                                        <button type="submit" class="btn btn-secondary glow-on-hover">Summarize</button>
+                                                    </form>
+                                                    <form action="/user/{{ user_id }}/save/{{ paper.id }}" method="POST">
+                                                        <button type="submit" class="btn btn-primary glow-on-hover">Save</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    {% elif response.type == 'research_timeline' %}
+                                        <h3>Research Timeline: {{ response.data.topic }}</h3>
+                                        <div id="timeline" style="height: 400px;"></div>
+                                        <h4 style="margin-top: 20px;">Key Milestones</h4>
+                                        <p>{{ response.data.milestones }}</p>
+                                    {% elif response.type == 'author_analysis' %}
+                                        <h3>Author Analysis: {{ response.data.author_name }}</h3>
+                                        <p><strong>Papers:</strong> {{ response.data.metrics.total_papers }}</p>
+                                        <p><strong>Citations:</strong> {{ response.data.metrics.total_citations }}</p>
+                                        <p><strong>h-index:</strong> {{ response.data.metrics.h_index }}</p>
+                                        <p><strong>Co-authors:</strong> {{ response.data.metrics.co_authors }}</p>
+                                        <h4 style="margin-top: 20px;">Collaboration Network</h4>
+                                        <img src="data:image/png;base64,{{ response.data.network_visualization }}" alt="Collaboration Network" class="glow-on-hover">
+                                        <h4 style="margin-top: 20px;">Impact Analysis</h4>
+                                        <p>{{ response.data.impact_analysis }}</p>
+                                    {% elif response.type == 'conference_summary' %}
+                                        <h3>Conference Summary</h3>
+                                        {% for topic, summary in response.data.topic_summaries.items() %}
+                                            <h4>{{ topic }}</h4>
+                                            <p>{{ summary }}</p>
+                                        {% endfor %}
+                                        <h4 style="margin-top: 20px;">Overall Trends</h4>
+                                        <p>{{ response.data.trends_analysis }}</p>
+                                    {% elif response.type == 'research_proposal' %}
+                                        <h3>Research Proposal: {{ response.data.topic }}</h3>
+                                        <p>{{ response.data.proposal }}</p>
+                                        <h4 style="margin-top: 20px;">Key References</h4>
+                                        <ul>
+                                            {% for paper in response.data.references %}
+                                                <li>{{ paper.title }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% elif response.type == 'methodologies' %}
+                                        <h3>Methodologies in Paper</h3>
+                                        <ul>
+                                            {% for method in response.data.methods %}
+                                                <li><strong>{{ method.name }}</strong>: {{ method.description }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% elif response.type == 'key_concepts' %}
+                                        <h3>Key Concepts in Paper</h3>
+                                        <h4>Entities</h4>
+                                        <ul>
+                                            {% for entity, type in response.data.concepts.entities.items() %}
+                                                <li><strong>{{ entity }}</strong> ({{ type }})</li>
+                                            {% endfor %}
+                                        </ul>
+                                        <h4>Relationships</h4>
+                                        <ul>
+                                            {% for rel in response.data.concepts.relationships %}
+                                                <li>{{ rel[0] }} → {{ rel[1] }} → {{ rel[2] }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% elif response.type == 'trend_visualization' %}
+                                        <h3>Research Trends</h3>
+                                        <div id="trend-chart" style="height: 400px;"></div>
+                                        <h4 style="margin-top: 20px;">Recent Research Themes</h4>
+                                        <img src="data:image/png;base64,{{ response.data.wordcloud }}" alt="Word Cloud" class="glow-on-hover">
+                                        <h4 style="margin-top: 20px;">Trend Analysis</h4>
+                                        <p>{{ response.data.analysis }}</p>
+                                    {% else %}
+                                        <p>{{ response.data }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="message assistant-message">
+                            <div class="message-header">
+                                <span>Research Assistant</span>
+                                <span>{{ now }}</span>
+                            </div>
+                            <div class="message-content">
+                                <p>Hello! I'm your AI research assistant. How can I help you today?</p>
+                                <p>Try asking me to:</p>
+                                <ul>
+                                    <li>Summarize a research paper</li>
+                                    <li>Find papers on a specific topic</li>
+                                    <li>Identify research gaps in a field</li>
+                                    <li>Generate a literature review</li>
+                                </ul>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <form action="/chat" method="POST" class="input-form">
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+                    <input type="text" name="message" placeholder="Ask me anything about research..." required>
+                    <button type="submit" class="glow-on-hover">Send <i class="fas fa-paper-plane"></i></button>
+                </form>
+            </section>
+        {% else %}
+            <section class="paper-details">
+                <div class="paper-header">
+                    <h2>{{ paper.title }}</h2>
+                    <div class="paper-meta">
+                        <span><i class="fas fa-users"></i> {{ paper.authors|join(', ') }}</span>
+                        <span><i class="fas fa-calendar-alt"></i> {{ paper.publication_date }}</span>
+                        <span><i class="fas fa-link"></i> {{ paper.source }}</span>
+                    </div>
+                </div>
+
+                <div class="paper-abstract">
+                    <h3>Abstract</h3>
+                    <p>{{ paper.abstract }}</p>
+                </div>
+
+                {% if paper.full_text %}
+                    <div style="margin-bottom: 20px;">
+                        <h3>Full Text Excerpt</h3>
+                        <p>{{ paper.full_text[:500] }}...</p>
+                    </div>
+                {% endif %}
+
+                <div class="paper-actions">
+                    <form action="/chat" method="POST">
+                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                        <input type="hidden" name="message" value="Summarize the paper: {{ paper.title }}">
+                        <button type="submit" class="btn btn-primary glow-on-hover">Summarize</button>
+                    </form>
+                    <form action="/visualize/citation/{{ paper.id }}" method="POST">
+                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                        <button type="submit" class="btn btn-secondary glow-on-hover">View Citation Network</button>
+                    </form>
+                    <form action="/user/{{ user_id }}/save/{{ paper.id }}" method="POST">
+                        <button type="submit" class="btn btn-primary glow-on-hover">Save to Profile</button>
+                    </form>
+                </div>
+            </section>
+        {% endif %}
+    </main>
+    <script>
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#3498db"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#3498db",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('threejs-canvas');
+            const renderer = new THREE.WebGLRenderer({
+                canvas: canvas,
+                alpha: true,
+                antialias: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            const geometry = new THREE.IcosahedronGeometry(2, 0);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0x3498db,
+                shininess: 100,
+                transparent: true,
+                opacity: 0.7
+            });
+
+            const shapes = [];
+            const count = 10;
+
+            for (let i = 0; i < count; i++) {
+                const shape = new THREE.Mesh(geometry, material.clone());
+                shape.position.x = (Math.random() - 0.5) * 50;
+                shape.position.y = (Math.random() - 0.5) * 50;
+                shape.position.z = (Math.random() - 0.5) * 50;
+                shape.rotation.x = Math.random() * Math.PI;
+                shape.rotation.y = Math.random() * Math.PI;
+                shape.userData = {
+                    speedX: Math.random() * 0.02 - 0.01,
+                    speedY: Math.random() * 0.02 - 0.01,
+                    speedZ: Math.random() * 0.02 - 0.01,
+                    rotSpeedX: Math.random() * 0.01,
+                    rotSpeedY: Math.random() * 0.01
+                };
+                shapes.push(shape);
+                scene.add(shape);
+            }
+
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                shapes.forEach(shape => {
+                    shape.position.x += shape.userData.speedX;
+                    shape.position.y += shape.userData.speedY;
+                    shape.position.z += shape.userData.speedZ;
+                    shape.rotation.x += shape.userData.rotSpeedX;
+                    shape.rotation.y += shape.userData.rotSpeedY;
+
+                    if (shape.position.x > 25 || shape.position.x < -25) shape.userData.speedX *= -1;
+                    if (shape.position.y > 25 || shape.position.y < -25) shape.userData.speedY *= -1;
+                    if (shape.position.z > 25 || shape.position.z < -25) shape.userData.speedZ *= -1;
+                });
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            window.addEventListener('resize', function() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                    });
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (!this.querySelector('.loading-spinner')) {
+                    const spinner = document.createElement('span');
+                    spinner.className = 'loading-spinner';
+                    this.insertBefore(spinner, this.firstChild);
+                    this.style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        if (spinner.parentNode === this) {
+                            this.removeChild(spinner);
+                            this.style.pointerEvents = 'auto';
+                        }
+                    }, 3000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

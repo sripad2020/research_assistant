@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file,redirect,flash,url_for,session
+from flask import Flask, render_template, request, jsonify, send_file, redirect, flash, url_for, session
 import google.generativeai as genai
 from typing import List, Dict, Optional
 import arxiv
@@ -8,7 +8,7 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 import threading
 import pypdf
-import uuid,io
+import uuid, io
 from nltk import FreqDist
 from nltk.corpus import stopwords
 import nltk
@@ -30,20 +30,21 @@ import time
 from bs4 import BeautifulSoup
 import logging
 from openalex import OpenAlex
-import PyPDF2,textwrap
+import PyPDF2, textwrap
 from PyPDF2 import PdfReader  # For PDF text extraction
 from werkzeug.utils import secure_filename
 from google.api_core import exceptions as google_exceptions
 from fuzzywuzzy import fuzz, process
 
 UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'pdf','doc','docx'}
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
 
 genai.configure(api_key='AIzaSyBpW7-VjXY74uhxz3ZjiS4rcespAQUXIhM')
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 # API Keys (should be in environment variables in production)
 SERPAPI_API_KEY = '40a56a489669a35ab2918d8c843d35137c9d59c9e71d0cc8df16dfac9ce09891'
+
 
 class EnhancedResearchAssistant:
     def __init__(self):
@@ -235,7 +236,8 @@ class EnhancedResearchAssistant:
                     'citations': [citation['id'].split('/')[-1] for citation in result.get('referenced_works', [])],
                     'references': [ref['id'].split('/')[-1] for ref in result.get('referenced_works', [])],
                     'topics': [concept['display_name'] for concept in result.get('concepts', [])],
-                    'pdf_url': result.get('primary_location', {}).get('pdf_url', '') if result.get('primary_location') else '',
+                    'pdf_url': result.get('primary_location', {}).get('pdf_url', '') if result.get(
+                        'primary_location') else '',
                     'source': 'openalex'
                 }
                 processed = self.process_paper(paper_data, 'openalex', query)
@@ -407,7 +409,7 @@ class EnhancedResearchAssistant:
         """
 
         analysis = model.generate_content(prompt).text
-        analysis=clean_markdown(analysis)
+        analysis = clean_markdown(analysis)
 
         result = {
             'plot': fig.to_json(),
@@ -563,7 +565,7 @@ class EnhancedResearchAssistant:
             """
 
         analysis = model.generate_content(prompt).text
-        analysis=clean_markdown(analysis)
+        analysis = clean_markdown(analysis)
 
         return {
             'comparison_table': comparison,
@@ -655,7 +657,7 @@ class EnhancedResearchAssistant:
         """
 
         milestones = model.generate_content(prompt).text
-        milestones=clean_markdown(milestones)
+        milestones = clean_markdown(milestones)
 
         return {
             'timeline': fig.to_json(),
@@ -719,7 +721,7 @@ class EnhancedResearchAssistant:
         """
 
         analysis = model.generate_content(prompt).text
-        analysis=clean_markdown(analysis)
+        analysis = clean_markdown(analysis)
 
         return {
             'metrics': {
@@ -801,7 +803,7 @@ class EnhancedResearchAssistant:
         """
 
         proposal = model.generate_content(prompt).text
-        proposal=clean_markdown(proposal)
+        proposal = clean_markdown(proposal)
 
         return {
             'proposal': proposal,
@@ -839,7 +841,7 @@ class EnhancedResearchAssistant:
             4. Limitations
             """
             topic_summaries[topic] = model.generate_content(prompt).text
-            topic_summaries[topic]=clean_markdown(topic_summaries[topic])
+            topic_summaries[topic] = clean_markdown(topic_summaries[topic])
 
         # Generate overall trends
         prompt = f"""
@@ -853,7 +855,7 @@ class EnhancedResearchAssistant:
         """
 
         trends = model.generate_content(prompt).text
-        trends=clean_markdown(trends)
+        trends = clean_markdown(trends)
 
         return {
             'topic_summaries': topic_summaries,
@@ -946,7 +948,7 @@ class EnhancedResearchAssistant:
             """
 
             result = model.generate_content(prompt).text
-            result=clean_markdown(result)
+            result = clean_markdown(result)
             self.cached_gaps[field] = result
             logger.info(f"Gaps identified for {field}")
             return result
@@ -977,7 +979,7 @@ class EnhancedResearchAssistant:
 
         try:
             summary = model.generate_content(prompt).text
-            summary=clean_markdown(summary)
+            summary = clean_markdown(summary)
 
             with self.lock:
                 if user_id and user_id in self.user_profiles:
@@ -1013,12 +1015,13 @@ class EnhancedResearchAssistant:
 
         try:
             review = model.generate_content(prompt).text
-            review=clean_markdown(review)
+            review = clean_markdown(review)
             self.cached_reviews[topic] = review
             return review
         except Exception as e:
             print(f"Error generating literature review: {e}")
             return "Error generating literature review."
+
 
 # ------------------- Flask Application Setup -------------------
 app = Flask(__name__)
@@ -1028,6 +1031,7 @@ assistant = EnhancedResearchAssistant()
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
 
 # Utility Functions
 def understand_query(user_message: str) -> Dict:
@@ -1075,6 +1079,8 @@ def understand_query(user_message: str) -> Dict:
             "parameters": {},
             "confidence": 0.5
         }
+
+
 def clean_markdown(text: str) -> str:
     """Remove markdown formatting from text"""
     # Remove bold and italic
@@ -1097,20 +1103,25 @@ def clean_markdown(text: str) -> str:
     # Clean up multiple newlines
     text = re.sub(r'\n\s*\n', '\n\n', text)
     return text.strip()
+
+
 def validate_user_id(user_id: str) -> str:
     """Ensure we have a valid user ID for personalization"""
     if not user_id or user_id == 'anonymous':
         return str(uuid.uuid4())
     return user_id
 
+
 # Flask Routes
 @app.route('/')
 def home():
     return render_template('index.html')
 
+
 @app.route('/chatting')
 def index():
     return render_template('chat.html')
+
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -1330,7 +1341,8 @@ def chat():
                     analysis = assistant.analyze_author_impact(param)
                     if 'network_visualization' in analysis:
                         import base64
-                        analysis['network_visualization'] = base64.b64encode(analysis['network_visualization'].getvalue()).decode('utf-8')
+                        analysis['network_visualization'] = base64.b64encode(
+                            analysis['network_visualization'].getvalue()).decode('utf-8')
                     responses.append({
                         'type': 'author_analysis',
                         'data': analysis
@@ -1433,7 +1445,7 @@ def chat():
 
                 Respond conversationally with markdown formatting."""
                 response = model.generate_content(prompt).text
-                response=clean_markdown(response)
+                response = clean_markdown(response)
                 responses.append({
                     'type': 'general',
                     'data': response
@@ -1446,6 +1458,7 @@ def chat():
         flash(f"An error occurred: {str(e)}", 'error')
         return redirect(url_for('index'))
 
+
 @app.route('/paper/<paper_id>')
 def get_paper(paper_id):
     """Get detailed paper information"""
@@ -1457,6 +1470,7 @@ def get_paper(paper_id):
         return redirect(url_for('index'))
 
     return render_template('paper.html', paper=paper)
+
 
 @app.route('/visualize/citation/<paper_id>', methods=['POST'])
 def visualize_citation(paper_id):
@@ -1481,6 +1495,7 @@ def visualize_citation(paper_id):
         flash(f"Error generating visualization: {str(e)}", 'error')
         return redirect(url_for('index'))
 
+
 @app.route('/user/<user_id>/history')
 def get_user_history(user_id):
     """Get user's search and paper history"""
@@ -1488,6 +1503,7 @@ def get_user_history(user_id):
         profile = assistant.user_profiles.get(user_id, {})
 
     return render_template('history.html', profile=profile, user_id=user_id)
+
 
 @app.route('/user/<user_id>/save/<paper_id>', methods=['POST'])
 def save_paper(user_id, paper_id):
@@ -1551,7 +1567,6 @@ def sync():
 
 
 def clean_text(text):
-    """Clean text by removing markdown and extra whitespace"""
     text = re.sub(r'\*\*|\*', '', text)
     text = textwrap.fill(text, width=80)  # Format for better display
     return text
@@ -1769,6 +1784,7 @@ def clear_document():
     if 'document_text' in session:
         session.pop('document_text')
     return jsonify({'success': True, 'message': 'Document session cleared. You can upload a new document now.'})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
