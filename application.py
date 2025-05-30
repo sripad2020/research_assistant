@@ -9,14 +9,10 @@ from concurrent.futures import ThreadPoolExecutor
 import threading
 import pypdf
 import uuid, io
-from nltk import FreqDist
-from nltk.corpus import stopwords
 import nltk
-from nltk.tokenize import sent_tokenize, word_tokenize
 from datetime import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 from io import BytesIO
@@ -24,14 +20,10 @@ import json
 from collections import defaultdict
 import plotly.graph_objects as go
 from wordcloud import WordCloud
-import pandas as pd
-import logging
 from openalex import OpenAlex
 import PyPDF2
-from PyPDF2 import PdfReader
 from werkzeug.utils import secure_filename
-from google.api_core import exceptions as google_exceptions
-from fuzzywuzzy import fuzz, process
+from fuzzywuzzy import fuzz
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
